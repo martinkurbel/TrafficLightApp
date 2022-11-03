@@ -36,6 +36,7 @@ class MenuViewController: ScrollStackViewController {
         stackView.addArrangedSubview(infoLabel)
         
         carInfoTextField.placeholder = "For example: BMW 320d"
+        carInfoTextField.autocorrectionType = .no
         carInfoTextField.borderStyle = .roundedRect
         stackView.addArrangedSubview(carInfoTextField)
         

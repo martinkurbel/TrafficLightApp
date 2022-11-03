@@ -22,6 +22,7 @@ class LightsViewController: ScrollStackViewController {
     private var carModel: String?
     
     private var isTrafficLightsOn = true
+    private var isTrafficLightsRunning = false
     
     convenience init(carModel: String) {
         self.init()
@@ -69,22 +70,45 @@ class LightsViewController: ScrollStackViewController {
     }
     
     private func runTrafficLight() {
-        guard isTrafficLightsOn else { return }
+        // Check if isTrafficLightsRunning if it's already running don't run it again
+        guard isTrafficLightsOn, !isTrafficLightsRunning else { return }
         
-        greenLight.isOn = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+        isTrafficLightsRunning = true
+        
+        let queue = DispatchQueue(label: "trafficLightQueue")
+        queue.async(qos: .userInteractive) { [weak self] in
+            guard let self = self else { return }
+            self.greenLight.isOn = true
+            
+            Thread.sleep(forTimeInterval: 4)
             self.greenLight.isOn = false
             self.orangeLight.isOn = true
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                self.orangeLight.isOn = false
-                self.redLight.isOn = true
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                    self.redLight.isOn = false
-                    self.runTrafficLight()
-                }
-            }
+            Thread.sleep(forTimeInterval: 1)
+            self.orangeLight.isOn = false
+            self.redLight.isOn = true
+            
+            Thread.sleep(forTimeInterval: 4)
+            self.redLight.isOn = false
+            self.isTrafficLightsRunning = false
+            self.runTrafficLight()
         }
+        
+        //        greenLight.isOn = true
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+        //            self.greenLight.isOn = false
+        //            self.orangeLight.isOn = true
+        //
+        //            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+        //                self.orangeLight.isOn = false
+        //                self.redLight.isOn = true
+        //
+        //                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+        //                    self.redLight.isOn = false
+        //                    self.isTrafficLightsRunning = false
+        //                    self.runTrafficLight()
+        //                }
+        //            }
+        //        }
     }
 }

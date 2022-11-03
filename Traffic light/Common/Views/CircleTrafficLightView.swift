@@ -37,8 +37,10 @@ class CircleTrafficLightView: UIView {
     }
     
     private func setupSwitching() {
-        UIView.animate(withDuration: 0.2) {
-            self.alpha = self.isOn ? 1 : 0.1
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.2) {
+                self.alpha = self.isOn ? 1 : 0.1
+            }
         }
     }
 }
